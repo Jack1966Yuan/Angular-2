@@ -1,0 +1,20 @@
+<div  *ngIf="isSuperAdm">
+    <alert-comp #myAlert></alert-comp>
+    <span style="font-size:18px; font-weight:bold">Admins</span>
+    <span class='glyphicon glyphicon-plus' title="Add a new admin" style="color:green; cursor:pointer" (click)="activeAddAdmin()"></span>
+    <div *ngFor="let alias of twoDimensionAdm;" class="row">
+        <div class="col-md-4">
+            <span *ngIf="alias.adm1" style="padding-left: 15px; font-size:16px;">{{alias.adm1}}</span>
+            <span *ngIf="alias.adm1" class='glyphicon glyphicon-minus' title="remove admin" style="color:red; cursor:pointer" (click)="removeAdmin(alias.adm1)"></span>        
+        </div>
+        <div class="col-md-4">
+                <span *ngIf="alias.adm2" style="padding-left: 15px; font-size:16px;">{{alias.adm2}}</span>
+                <span *ngIf="alias.adm2" class='glyphicon glyphicon-minus' title="remove admin" style="color:red; cursor:pointer" (click)="removeAdmin(alias.adm2)"></span>        
+        </div>
+        <div class="col-md-4">
+                <span *ngIf="alias.adm3" style="padding-left: 15px; font-size:16px;">{{alias.adm3}}</span>
+                <span *ngIf="alias.adm3" class='glyphicon glyphicon-minus' title="remove admin" style="color:red; cursor:pointer" (click)="removeAdmin(alias.adm2)"></span> 
+        </div>        
+    </div>
+    <input class="form-control" *ngIf="newAdminInputActive" (keydown)="addAdmin($event)" title="type alias as a new admin" style="width:80%;" [(ngModel)]='newAdmin' placeholder="please input alias">   
+</div>

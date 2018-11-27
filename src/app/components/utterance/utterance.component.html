@@ -1,0 +1,250 @@
+﻿
+<alert-comp #myAlert></alert-comp>
+<div class="page-main">
+  <div class="row">
+      <div class="well lf-instruction-font">
+          <ul *ngIf="!readOnly">
+              <li>Please use this page to add Hotfix. Once done, click "<a (click)="returnModuleDetail()">Return</a>" button in the bottom of page.</li>
+              <li>Hotfix needs to be assigned with a valid intent before slot tagging.</li>
+              <li>Once hotfix is added, the text cannot be changed. Edit button only allows you to edit the slot tagging.</li>
+              <!-- <li>Rule is a our designed grammar to simplify the access to FST language. We will convert it to FST, and build the model. </li>
+              <li>The detailed tutorial with examples on writing Rule is: <a href="https://microsoft-my.sharepoint.com/:b:/p/yum/EZSPKQAdBGZCrY3Ptcz4fmwBrRm3k8ytZL51XID9Z1fWcQ">Basic Usage</a> and <a href="https://microsoft-my.sharepoint.com/:b:/p/yum/ESZwejaeH6lNs_0VUlTIZs4BVEyma5tYZ_ktxR89l2wpCQ">Advanced Usage</a>.</li> -->
+          </ul>
+          <ul *ngIf="readOnly">
+            <li>You are not the owner for the model, so you can only view the content here</li>
+            <li>Clicking the Hotfix sentence will allow you to see the detailed annotation of this query.</li>
+          </ul>
+      </div>
+  </div>
+
+  <p *ngIf="!utterRule"><em>Loading...</em></p>
+  <div *ngIf="utterRule" style="margin-top:25px;">
+      <div class="row">
+          <div class="row" style="margin-left:2px">
+              <div class="row">
+                  <div class="col-sm-10">
+                        <span class="lf-title-font-class">Domain Name:</span>
+                        <span class="lf-hotfix-domain-class">{{utterRule.DomainName}}</span>
+                  </div>
+                  <div class="col-sm-2">
+                        <button *ngIf="utterRule.HotfixList && utterRule.HotfixList.length > 0 && utterRule.Deployed" class="btn btn-primary lf-mid-button" (click)="validateHotfix()">Validate</button>
+                  </div>                  
+              </div>
+          </div>
+          <div class="row lf-hotfix-title-line">
+              <div class="col-sm-3">
+                  <span class="lf-intent-font-class">Intent:</span>
+              </div>
+              <div class="col-sm-8">
+                  <span class="lf-intent-font-class">Slot String:</span>
+              </div>
+          </div>
+          <div *ngFor="let item of utterRule.HotfixList; let i=index" class="row lf-hotfix-content-line">
+              <div>
+                  <div class="col-sm-3">
+                      <span class="lf-hotfix-font-class">{{item.Intent}}</span>
+                  </div>
+                  <div class="col-sm-7">
+                      <span class="lf-hotfix-font-class" (click)="readOnly && editUtteranceClick(i)" [ngStyle]="{cursor: readOnly ? 'pointer' : 'auto'}">{{item.SlotString}}</span>
+                  </div>
+                  <div class="col-sm-2">
+                      <button *ngIf="!readOnly" class="btn btn-default" (click)="editUtteranceClick(i)">Edit</button>
+                      <button *ngIf="!readOnly" class="btn btn-default" id ='delete_hotfix_{{i}}' style="margin-left:1px" (click)="deleteUtteranceClick(i)">Delete</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!-- <hr />
+      <div class="row" style="margin-top:50px">
+          <p class="lf-title-font-class">To Add Rule, choose Lexicon, Pattern, Intent and Slot button from below, and follow the tooltip/instructions:</p>
+          <div class="row" style="margin-top:30px">
+              <div class="col-md-1">
+                 <div class="row">
+                     <button class="btn btn-default lf-small-button" id="lexiconTooltip" [title]=lexiconTip data-toggle="tooltip" (click)="openLexicon()" [disabled]="utterRule.ViewOnly">Lexicon</button>
+                 </div>
+                 <div class="row" style="margin-top:20px">
+                     <button class="btn btn-default lf-small-button" id="patternTooltip" [title]=patternTip data-toggle="tooltip" (click)="openPattern()" [disabled]="utterRule.ViewOnly">Pattern</button>
+                 </div>
+                  <div class="row" style="margin-top:20px">
+                      <button class="btn btn-default lf-small-button" id="intentTooltip" [title]=intentTip data-toggle="tooltip" (click)="openIntent()" [disabled]="utterRule.ViewOnly">Intent</button>
+                  </div>
+                  <div class="row" style="margin-top:20px">
+                      <button class="btn btn-default lf-small-button" id="slotTooltip" [title]=slotTip data-toggle="tooltip" (click)="openSlot()" [disabled]="utterRule.ViewOnly">Slot</button>
+                  </div>
+              </div>
+              <div class="col-md-1"></div>
+              <div class="col-md-10">
+                  <textarea class="form-control" [(ngModel)]='utterRule.Rules' rows="12" cols="110" (keyup)="textAreaChange()" placeholder="Write your Rule Here..." style="font-size:16px"></textarea>
+              </div>
+          </div>
+
+      </div>
+      <hr style="margin-top:50px"/> -->
+      <div class="row" style="margin-top:50px">
+          <button *ngIf="!readOnly" class="btn btn-primary lf-mid-button" (click)="createUtterance()">Add Hotfix</button>
+          <button *ngIf="!readOnly" class="btn btn-primary lf-mid-button" (click)="importHotfix()">Import</button>
+          <button *ngIf="utterRule.HotfixList && utterRule.HotfixList.length > 0" class="btn btn-primary lf-mid-button" id="ExportButton" (click)="exportHotfix()">Export</button>          
+          <button class="btn btn-primary lf-mid-button" (click)="returnModuleDetail()">Return</button>
+          <div *ngIf='uploadActive' style="margin-top: 15px; margin-left: 130px">
+                <upload-comp [type]="'hotfix'" [domainID]="domainID" (fileuploaded)="uploadEvent($event)" (uploadCanceled)="cancelEvent()" ></upload-comp>
+          </div>          
+      </div>
+      <div class="container lf-form-container" [hidden]="isNewUtteranceActive">
+        <query-comp #myQueryComponent [utterRule]="utterRule" [readOnly]="readOnly" [type]="'Hotfix Panel'" [isnew]="isnew" (query-event)="utteranceHandler($event)"></query-comp>
+      </div>
+
+      <div class="container lf-form-container" [hidden]="!isRuleActive">
+          <div class="row">
+              <div class="col-md-3">
+                 <span class="lf-title-font-class">Add Rule:</span>
+              </div>
+              <div class="col-md-9" style="text-align:right;">
+                  <span class="glyphicon glyphicon-remove size" title="close" style="cursor:pointer;font-size:19px" (click)="closeAllRule()"></span>
+              </div>
+              <!--<div class="col-md-2"></div>-->
+          </div>
+          <form [formGroup]="formLexicon" class="form-horizontal" autocomplete="off" [hidden]="!isLexiconActive" style="margin-top:20px">
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="well lf-rule-instruction-font">
+                          <ul>
+                              <li>Lexicon Variable is being used to group list of phrases (serves similar functions) together.</li>
+                              <li>For example, if your model needs to identify "Search Item" quries as "search item, find item, look for item" etc,</li>
+                              <li>You can group the verb together as a Lexicon Variable: <code>Lexicon FindVerb : search, find, look for</code></li>
+                              <li>From above, 'FindVerb' is the Variable name, and using colon to seperate between your words</li>
+                              <li>From the below form, define the variable name and group of phrases, we will automatically generate the rule grammar for you to edit</li>
+                          </ul>
+                      </div>
+                  </div>
+                  <!--<div class="col-md-2"></div>-->
+              </div>
+              <hr />
+              <div class="row">
+                  <div class="col-md-12">
+                      <p class="lf-form-title-class">Lexicon Variable Name (please define the name of your lexicon variable):</p>
+                      <input type="text" class="form-control" id="lexiconName" style="width:100%; margin-bottom: 10px" formControlName="lexiconName" placeholder="FindVerb...">
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12" style="margin-top:10px">
+                      <p class="lf-form-title-class">Lexicon Phrases (please define the synonym phrases to be grouped together, and seperate them using comma):</p>
+                      <input type="text" class="form-control" id="lexiconContent" style="width:100%; margin-bottom: 10px" formControlName="lexiconContent" placeholder="find, search, look for...">
+                  </div>
+              </div>
+              <div class="row" style="margin-top:20px; margin-bottom:30px">
+                  <div class="col-md-12" style="text-align:center">
+                      <button class="btn btn-primary lf-mid-button" (click)="addLexicon()">Save</button>
+                      <button class="btn btn-primary lf-mid-button" style="margin-left:10px" (click)="closeLexicon()">Cancel</button>
+                  </div>
+              </div>
+          </form>
+
+          <form [formGroup]="formPattern" class="form-horizontal" autocomplete="off" [hidden]="!isPatternActive" style="margin-top:20px">
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="well lf-rule-instruction-font">
+                          <ul>
+                              <li>Pattern Variable is being used to define the sentence pattern. It consists of previously defined Lexicon Variable and other words</li>
+                              <li>You need to define Pattern Variable first, before defining Intent</li>
+                              <li>Back to the Lexicon example, after you group the Lexicon Variables together via - <code>Lexicon FindVerb : search, find, look for</code></li>
+                              <li>You can now define the sentence pattern <code>Pattern findPattern : $FindVerb an item</code></li>
+                              <li>findPattern is a variable name (can be any), also please add dollar sign '$', for your previously defined 'Lexicon Variable'</li>
+                              <li>From the below form, just define the variable name, and sentence patten.</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+              <hr />
+              <div class="row">
+                  <div class="col-md-12">
+                      <p class="lf-form-title-class">Pattern Variable Name (please define the name of your pattern variable):</p>
+                      <input type="text" class="form-control" id="patternName" style="width:100%; margin-bottom: 10px" formControlName="patternName" placeholder="findPattern...">
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12" style="margin-top:10px">
+                      <p class="lf-form-title-class">Pattern Phrases (please define the pattern content, remember to add '$' in front of the previously defined Lexicon Variable):</p>
+                      <input type="text" class="form-control" id="patternContent" style="width:100%; margin-bottom: 10px" formControlName="patternContent" placeholder="$FindVerb an item...">
+                  </div>
+              </div>
+              <div class="row" style="margin-top:20px; margin-bottom:30px">
+                  <div class="col-md-12" style="text-align:center">
+                      <button class="btn btn-primary lf-mid-button" (click)="addPattern()" >Save</button>
+                      <button class="btn btn-primary lf-mid-button" style="margin-left:10px" (click)="closePattern()">Cancel</button>
+                  </div>
+              </div>
+          </form>
+
+          <form [formGroup]="formIntent" class="form-horizontal" autocomplete="off" [hidden]="!isIntentActive" style="margin-top:20px">
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="well lf-rule-instruction-font">
+                          <ul>
+                              <li>Intent is defined by Pattern Variable, which is pre-defined</li>
+                              <li>Back to our example, after defining Pattern Variable <code>Pattern findPattern : $FindVerb an item</code></li>
+                              <li>You can now define your Intent as follow: <code>Intent find_item : findPattern1, findPattern2</code></li>
+                              <li>'find_item' is your Intent tag from Schema. And you can define multiple Pattern Variable for one Intent (seperate them by comma)</li>
+                              <li>From the below form, just define the Intent Tag, and Pattern Variables.</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+              <hr />
+              <div class="row">
+                  <div class="col-md-12">
+                      <p class="lf-form-title-class">Intent Tag (please define your intent tag):</p>
+                      <input type="text" class="form-control" id="intentName" style="width:100%; margin-bottom: 10px" formControlName="intentName" placeholder="find_item">
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12" style="margin-top:10px">
+                      <p class="lf-form-title-class">Pattern Variables:</p>
+                      <input type="text" class="form-control" id="patternContent" style="width:100%; margin-bottom: 10px" formControlName="intentContent" placeholder="findPattern1, findPattern2...">
+                  </div>
+              </div>
+              <div class="row" style="margin-top:20px; margin-bottom:30px">
+                  <div class="col-md-12" style="text-align:center">
+                      <button class="btn btn-primary lf-mid-button" (click)="addIntent()">Save</button>
+                      <button class="btn btn-primary lf-mid-button" style="margin-left:10px" (click)="closeIntent()">Cancel</button>
+                  </div>
+              </div>
+          </form>
+
+          <form [formGroup]="formSlot" class="form-horizontal" autocomplete="off" [hidden]="!isSlotActive" style="margin-top:20px">
+              <div class="row">
+                  <div class="col-md-12">
+                      <div class="well lf-rule-instruction-font">
+                          <ul>
+                              <li>Slot is defined by Lexicon Variable, which is pre-defined. We only need to define tag, and the variables</li>
+                              <li>For example if we have grouped a list of locations in a Lexicon Variable - <code>Leixcon locationEntity : beijing, new york, tokyo</code></li>
+                              <li>You can now define your Slot as follow: <code>Slot absolute_location locationEntity1, locationEntity2</code></li>
+                              <li>'absolute_location' is your Slot tag from Schema. And you can define multiple Lexicon Variable for one Slot (seperate them by comma).</li>
+                              <li>From the below form, just define the Slot Tag, and Lexicon Variables.</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+              <hr />
+              <div class="row">
+                  <div class="col-md-12">
+                      <p class="lf-form-title-class">Slot Tag (please define your intent tag):</p>
+                      <input type="text" class="form-control" id="slotName" style="width:100%; margin-bottom: 10px" formControlName="slotName" placeholder="absolute_location">
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12" style="margin-top:10px">
+                      <p class="lf-form-title-class">Lexicon Variables:</p>
+                      <input type="text" class="form-control" id="slotContent" style="width:100%; margin-bottom: 10px" formControlName="slotContent" placeholder="locationEntity1, locationEntity2...">
+                  </div>
+              </div>
+              <div class="row" style="margin-top:20px; margin-bottom:30px">
+                  <div class="col-md-12" style="text-align:center">
+                      <button class="btn btn-primary lf-mid-button" (click)="addSlot()">Save</button>
+                      <button class="btn btn-primary lf-mid-button" style="margin-left:10px" (click)="closeSlot()">Cancel</button>
+                  </div>
+              </div>
+          </form>
+
+      </div>
+  </div>
+</div>

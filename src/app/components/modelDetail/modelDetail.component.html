@@ -1,0 +1,272 @@
+﻿<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<alert-comp #myAlert></alert-comp>
+<h2>Model Page</h2>
+<p *ngIf="!domain"><em>Loading...</em></p>
+<div *ngIf="domain">
+    <div class ="container page-main">
+        <div class="row">
+            <div class="well lf-instruction-font">
+                <ul *ngIf="!readOnly">
+                    <li>You can edit the domain as well as relevant intents and slots.</li>
+                    <li>Clicking the "Hotfix Defined/BVT Defined" button in the bottom of page will re-direct you to create your hotfix/bvt.</li>
+                    <li>You can delete the entire model by clicking the "delete" button besides Domain.</li>
+                    <li>For display color: <span style="color:red;">Red</span> means Intent/Slot is waiting for review; <span style="color:green">Green</span> means admin has reviewed; <span style="color:black">Black</span> means review completed</li>
+                </ul>
+                <ul *ngIf="readOnly">
+                  <li>You are not the owner of this model. So you can only view the model.</li>
+                  <li>Clicking the text of the Content will allow you to view them (Domain/Intent/Slot)</li>
+                  <li>Clicking the "Hotfix Defined/BVT Defined" button in the bottom of page will re-direct you to view the hotfix/bvt for this model.</li>
+              </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-7">
+                <p class="lf-title-font-class">Domain:</p>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="lf-form-content-class" (click)="readOnly && editDomainClick()" [ngStyle]="{cursor: readOnly ? 'pointer' : 'auto'}">{{domain.RequestedObject.Name}}</span>
+                    </div>
+                    <div class="col-sm-6" style="font-size:18px">
+                        <button *ngIf="!readOnly" class="btn btn-default" (click)="editDomainClick()">Edit</button>
+                        <button *ngIf="!readOnly" class="btn btn-default" id ="DeleteButton" style="margin-left:1px" (click)="deleteDomainClick()">Delete</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="row" *ngIf="domain.IsAdmin && shareInputVisible">
+                    <button class="btn btn-primary" (click)='sharewithClick()'>Submit</button>
+                    <button class="btn btn-primary" (click)='sharewithCancel()'>Cancel</button>
+                </div>
+                <div class="row" *ngIf="domain.IsAdmin && !shareInputVisible">
+                    <button class="btn btn-primary" (click)='sharewithClick()'>Modify Owners</button>
+                </div>
+                <div class="lf-owner-popup" *ngIf="domain.IsAdmin && shareInputVisible">
+                    <div>
+                        <div>
+                                <span style="font-size:14px; font-weight:bolder">Data Owners:</span>
+                                <span class='glyphicon glyphicon-plus' title="Add a new data owner" style="color:green; cursor:pointer" (click)="addDataOwner()"></span>
+                                <!--button class="col-sm-4 btn btn-default" style="font-size:12px; width:25%" (click)="addDataOwner()">Add Data Owner</button-->
+                        </div>
+                        <div *ngIf="owners && owners.DataOwnerList && owners.DataOwnerList.Alias && owners.DataOwnerList.Alias.length > 0" style="padding-left:10px;">
+                            <div *ngFor="let o of owners.DataOwnerList.Alias; let i=index"><span style="padding-left: 15px;">{{o}}</span>
+                                <span class='glyphicon glyphicon-minus' title="remove a data owner" style="color:red; cursor:pointer" (click)="deleteDataOwner(i)"></span>
+                                <!--button class="btn btn-default" style="font-size:12px; margin:1px; width:25%" (click)="deleteDataOwner()">Delete Data Owner</button-->
+                            </div>
+                        </div>
+                        <input class="form-control" *ngIf="ownersPresent.DataOwner.display" (keydown)="addAliasToDataOwner($event)" title="type alias as a data owner" style="width:80%;" [(ngModel)]='ownersPresent.DataOwner.text' placeholder="please input alias and seperate with comma">
+                    </div>
+                    <div>
+                        <div>
+                                <span style="font-size:14px; font-weight:bolder;">Model Owners:</span>
+                                <span class='glyphicon glyphicon-plus' title="Add a new model owner" style="color:green; cursor:pointer" (click)="addModelOwner()"></span>
+                        </div>
+                        <div *ngIf="owners && owners.ModelOwnerList && owners.ModelOwnerList.Alias && owners.ModelOwnerList.Alias.length > 0" style="padding-left:10px">
+                            <div *ngFor="let o of owners.ModelOwnerList.Alias; let i=index"><span style="padding-left: 15px;">{{o}}</span>
+                                <span class='glyphicon glyphicon-minus' title="remove a model owner" style="color:red; cursor:pointer" (click)="deleteModelOwner(i)"></span>
+                            </div>
+                        </div>
+                        <input class="form-control" *ngIf="ownersPresent.ModelOwner.display" (keydown)="addAliasToModelOwner($event)" title="type alias as a model owner" style="width:80%;" [(ngModel)]='ownersPresent.ModelOwner.text' placeholder="please input alias and seperate with comma">
+                    </div>
+                    <div>
+                        <div>
+                                <span style="font-size:14px; font-weight:bolder;">Skill Owners:</span>
+                                <span class='glyphicon glyphicon-plus' title="Add a new skill owner" style="color:green; cursor:pointer;" (click)="addSkillOwner()"></span>
+                        </div>
+                        <div *ngIf="owners && owners.SkillOwnerList && owners.SkillOwnerList.Alias && owners.SkillOwnerList.Alias.length > 0" style="padding-left:10px;">
+                            <div *ngFor="let o of owners.SkillOwnerList.Alias; let i=index"><span style="padding-left: 15px;">{{o}}</span>
+                                <span class='glyphicon glyphicon-minus' title="remove a skill owner" style="color:red; cursor:pointer" (click)="deleteSkillOwner(i)"></span>
+                            </div>
+                        </div>
+                        <input class="form-control" *ngIf="ownersPresent.SkillOwner.display" (keydown)="addAliasToSkillOwner($event)" title="type alias as a skill owner" style="width:80%;" [(ngModel)]='ownersPresent.SkillOwner.text' placeholder="please input alias and seperate with comma">
+                    </div>
+                </div>
+                <!-- <div *ngIf="isOwner">
+                  <div class="row">
+                    <button class="btn btn-primary" (click)='sharewithClick()'>{{shareText}}</button>
+                    <button class="btn btn-primary" (click)='sharewithCancel()' [ngStyle]="{display: shareIsInvisible ? 'none' : 'block'}">Cancel</button>
+                  </div>
+                    <input class="form-control" [(ngModel)]='shareWith' placeholder="type the alias here, and seperate them with ','" [ngStyle]="{display: shareIsInvisible ? 'none' : 'block'}" style="width:80%; margin-top:5px;"/>
+                </div> -->
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-7">
+                <p class="lf-title-font-class">Intent:</p>
+                <div *ngIf="domain != null && domain != undefined && domain.RequestedObject.Intent != null && domain.RequestedObject.Intent != undefined">
+                    <div *ngFor="let item of domain.RequestedObject.Intent; let i=index" class="row" >
+                        <div class="row" style="margin-top:1px">
+                            <div class="col-sm-6">
+                                <span class="lf-form-intentslot-class" (click)="readOnly && editClick('Intent', i)" [ngStyle]="{cursor: readOnly ? 'pointer' : 'auto', 'color':  getTagColor('Intent', i)}">{{item.Tag}}</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <button *ngIf="!readOnly" class="btn btn-default" (click)="editClick('Intent', i)">Edit</button>
+                                <button *ngIf="!readOnly" class="btn btn-default" id ='delete_intent_{{i}}' style="margin-left:1px" (click)="deleteClick('Intent', i)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <button *ngIf="!readOnly" class="btn btn-primary lf-small-button" (click)="createNewItem('Intent')">Add Intent</button>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-7">
+                <h5 style="display:block;font-size:20px">Slot:</h5>
+                <div *ngIf="domain != null && domain != undefined && domain.RequestedObject.Slot != null && domain.RequestedObject.Slot != undefined">
+                    <div *ngFor="let item of domain.RequestedObject.Slot; let i=index">
+                        <div class="row" style="margin-top:1px">
+                            <div class="col-sm-6">
+                                <span class="lf-form-intentslot-class-less-margin" (click)="readOnly && editClick('Slot', i)" [ngStyle]="{cursor: readOnly ? 'pointer' : 'auto', 'color':  getTagColor('Slot', i)}">{{item.Tag}}</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <button *ngIf="!readOnly" class="btn btn-default" (click)="editClick('Slot', i)">Edit</button>
+                                <button *ngIf="!readOnly" class="btn btn-default" id ='delete_slot_{{i}}' style="margin-left:1px" (click)="deleteClick('Slot', i)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <button *ngIf="!readOnly" class="btn btn-primary lf-small-button" (click)="createNewItem('Slot')">Add Slot</button>
+            </div>
+        </div>
+        <hr />
+        <button [routerLink]="['/utterance', domain.RequestedObject.DomainID]" class="btn btn-primary lf-mid-button">Hotfix</button>
+        <button [routerLink]="['/bvt', domain.RequestedObject.DomainID]" class="btn btn-primary lf-small-button-2">BVT</button>
+        <button *ngIf="isAdmin" (click)="deploy()" class="btn btn-primary lf-small-button-3">Deploy Model</button>
+        <button (click)="returnToModelsPage()" class="btn btn-primary lf-small-button-2">Return</button>
+    </div>
+
+    <div class="lf-form-container" [hidden]="isntNewItemActive">
+
+        <div class="row">
+            <div class="col-sm-6" style="text-align:left;">
+                <p class="lf-title-font-class">{{action + ' ' + item}}</p>
+            </div>
+            <div class="col-sm-6" style="text-align:right;">
+                <span class="glyphicon glyphicon-remove size" title="Close" style="cursor:pointer;font-size:19px" (click)="closeWindow()"></span>
+            </div>
+        </div>
+        <hr />
+        <div class="row lf-form-container-inner" [hidden]="item=='Domain'">
+            <div class="col-md-12">
+                <form [formGroup]="formModel" autocomplete="off"  style="font-size:14px;">
+                    <div style="font-size:17px">Name: <input [readOnly]="readOnly || nameDescriptionReadOnly" type="text" class="form-control" style="width:55%; margin-bottom: 10px; margin-top:10px" formControlName="name"></div>
+                    <div style="font-size:17px">Tag: <input [readOnly]="readOnly || nameDescriptionReadOnly" type="text" class="form-control" style="width:55%; margin-bottom: 10px; margin-top:10px" formControlName="tag"></div>
+
+                    <!-- <div *ngIf="(isAdmin || isOwner) && action != 'New'" class=lf-admin-name-panel>
+                      <label>Reviewer Email:</label>
+                      <span> {{reviewerEmail}} </span>
+                    </div> -->
+                    <div *ngIf="(isAdmin || isOwner) && action != 'New'" class=lf-admin-name-panel>
+                      <label>Revision History:</label>
+                      <span> {{statusMessage}} </span>
+                    </div>
+
+                    <!-- <div *ngIf="(isAdmin || isOwner) && action != 'New' && reviewStatus % 3 === 1" class=lf-admin-name-panel>
+                      <div *ngIf="ownerResult === 4">
+
+                      </div>
+                      <div *ngIf="ownerResult === 5">
+                          <span> {{statusMessage}} </span>
+                      </div>
+                    </div> -->
+                    <div *ngIf="adminChoiceDesplay">
+                    <!-- <div *ngIf="isAdmin && reviewStatus % 3 != 2 && !isAdminAdd && action != 'New'"> -->
+                            <div class="radio">
+                                    <label>
+                                    <input type="radio" name="radioGroup" value="3" [(ngModel)]="suggestion.options" [ngModelOptions]="{standalone: true}" /> Approve
+                                    </label>
+                            </div>
+                            <div class="radio">
+                                    <label>
+                                    <input type="radio" name="radioGroup" value="1" [(ngModel)]="suggestion.options" [ngModelOptions]="{standalone: true}" /> Delete
+                                    </label>
+                            </div>
+                            <div class="radio">
+                                    <label>
+                                    <input type="radio" name="radioGroup" value="2" [(ngModel)]="suggestion.options" [ngModelOptions]="{standalone: true}" /> Rename
+                                    </label>
+                                    <input type="text" *ngIf="suggestion.options=='2'" style="width:30%; margin-left:10px" placeholder=" please give the new name here" [(ngModel)]="suggestion.rename" [ngModelOptions]="{standalone: true}">
+                            </div>
+                            <div class="form-group">
+                                <label>Comment:</label>
+                                <textarea class="form-control" rows="4" [(ngModel)]="suggestion.comment" [ngModelOptions]="{standalone: true}"></textarea>
+                            </div>
+                    </div>
+
+                    <!-- <div *ngIf="isAdmin && reviewStatus % 3 !== 2 && isAdminAdd && action != 'New'">
+                      <label style="font-size:15px">Revision History:</label>
+                      <span style="font-size:15px"> {{adminReviewDisplay}} </span>
+                    </div> -->
+                    <div *ngIf="completeDesplay">
+                    <!-- <div *ngIf="(isAdmin || isOwner) && reviewStatus % 3 === 2 && action != 'New'"> -->
+                      <label style="font-size:15px">Revision Status:</label>
+                      <span style="font-size:15px"> {{adminReviewDisplay}} </span>
+                    </div>
+
+                    <div *ngIf="ownerInfoDesplay">
+                        <label style="font-size:15px; margin-top:3px">Review Suggestion: </label>
+                        <span style="font-size:15px"> {{adminReviewDisplay}} </span>
+                        <br />
+                        <label style="font-size:15px">Admin Comments:</label>
+                        <span style="font-size:15px"> {{suggestion.comment || ""}} </span>
+
+                        <!-- <div *ngIf=" reviewStatus % 3 !== 2 "> -->
+                            <div class="radio">
+                                    <label>
+                                    <input type="radio" name="radioGroupOwner" style="font-size:15px" value="1" [(ngModel)]="ownerChoice" [ngModelOptions]="{standalone: true}" /> Yes, I accept the change.
+                                    </label>
+                            </div>
+                            <div class="radio">
+                                    <label>
+                                    <input type="radio" name="radioGroupOwner" style="font-size:15px" value="2" [(ngModel)]="ownerChoice" [ngModelOptions]="{standalone: true}" /> Nope, do not change.
+                                    </label>
+                            </div>
+                        <!-- </div> -->
+                    </div>
+
+                    <div style="margin-top:30px; font-size:17px" >Description: <input [readOnly]="readOnly || nameDescriptionReadOnly" type="text" class="form-control" style="width:95%; margin-bottom: 10px" formControlName="description" ></div>
+                    <div style="font-size:17px">Positive Examples (please define some example queries for this {{item}}) <span class="glyphicon myglyphicon glyphicon-plus-sign" title="Add a positive example" style="cursor:pointer; margin-bottom:10px; margin-left:10px" (click)="(isOwner || isAdmin) && addPositive()"></span></div>
+                    <div formArrayName="positive">
+                        <div *ngFor="let e of formModel.get('positive').controls; let i=index">
+                            <input [readOnly]="readOnly" [formControlName]="i" class="form-control" style="width:80%; margin-bottom:10px;" >
+                            <span class="glyphicon glyphicon glyphicon-trash" style="cursor:pointer;font-size:19px; margin-left:1px" title="Remove a positive example" (click)="( isOwner || isAdmin ) && removePositive(i)"></span>
+                        </div>
+                    </div>
+                    <div style="font-size:17px">Negative Examples (please define some example queries for this {{item}}) <span class="glyphicon myglyphicon glyphicon-plus-sign" title="Add a negative example" style="cursor:pointer; margin-bottom:10px; margin-left:10px" (click)="(isOwner || isAdmin) && addNegative()"></span></div>
+                    <div formArrayName="negative">
+                        <div *ngFor="let e of formModel.get('negative').controls; let i=index">
+                            <input [readOnly]="readOnly" [formControlName]="i" class="form-control" style="width:80%; margin-bottom:10px;" >
+                            <span class="glyphicon glyphicon glyphicon-trash" style="cursor:pointer;font-size:19px; margin-left:1px" title="Remove a negative example" (click)="( isOwner || isAdmin ) && removeNegative(i)"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row lf-intent-form-button" [hidden]="item=='Domain'">
+            <button *ngIf="!readOnly" class="btn btn-primary lf-small-button" (click)="newItemSubmit()">Save</button>
+            <button class="btn btn-primary lf-small-button" (click)="closeWindow()">Cancel</button>
+            <button *ngIf="editUtIndex > 0 && action=='Edit'" class="btn btn-primary lf-small-button" (click)="previousClick()">&laquo; Previous</button>
+            <button *ngIf="action=='New' || (item == 'Intent' ? domain.RequestedObject.Intent && editUtIndex < domain.RequestedObject.Intent.length - 1 : domain.RequestedObject.Slot && editUtIndex < domain.RequestedObject.Slot.length - 1)" class="btn btn-primary lf-small-button" (click)="nextClick()">Next &raquo;</button>
+        </div>
+
+        <div class="row lf-margin-left" [hidden]="item!='Domain'">
+            <form [formGroup]="formDomain" class="form-horizontal" style="margin-top:10px" autocomplete="off">
+                <div style="font-size:17px">Name: <input [readOnly]="readOnly" type="text" class="form-control" style="width:55%; margin-bottom: 10px;" formControlName="name" [(ngModel)]="domain_name" (keyup)="parseDomainName($event)" placeholder="shopping"></div>
+                <div style="font-size:17px; margin-top:20px">Description: <input [readOnly]="readOnly" type="text" class="form-control" style="width:95%; margin-bottom: 10px" formControlName="description"></div>
+            </form>
+            <div class="lf-domain-form-button">
+                <button *ngIf="!readOnly" class="btn btn-primary lf-small-button" (click)="newDomainSubmit()">Save</button>
+                <button class="btn btn-primary lf-small-button" (click)="closeWindow()">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>

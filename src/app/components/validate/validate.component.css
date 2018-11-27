@@ -1,0 +1,30 @@
+.row-layout {
+    font-family: Tahoma;
+    font-size: 10px;
+}
+
+.busy-cursor {
+    cursor: progress;
+}
+
+.lf-form-title-class {
+    font-family: 'Tahoma';
+    font-size: 26px;
+}
+
+.lf-form-secondary-class {
+  font-family: 'Segoe UI';
+  font-weight: bold;
+  font-size: 26px;
+}
+
+.lf-form-third-class {
+  font-family: 'Segoe UI';
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.lf-form-content-class {
+  font-family: 'Tahoma';
+  font-size: 16px;
+}

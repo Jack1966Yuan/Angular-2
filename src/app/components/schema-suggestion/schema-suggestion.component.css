@@ -1,0 +1,40 @@
+.schemaItem {
+    margin-left: 20px;
+}
+
+.schema {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.slotString {
+    margin:10px 5px 5px 10px;
+    font-size: 140%;
+}
+
+.domainintentslot {
+    font-size: 120%;
+    font-weight: bold;
+}
+
+.sp {
+    margin-bottom: 10px;
+}
+
+.lf-small-button {
+    width: 100px;
+}
+
+.lf-med-button {
+    width: 150px;
+}
+
+.cell {
+    padding: 1px 5px 1px 5px;
+    width: 100%;
+}
+
+.pop {
+    position: absolute;
+    z-index: 20;
+}

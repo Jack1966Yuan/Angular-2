@@ -1,0 +1,54 @@
+
+<alert-comp #myAlert></alert-comp>
+<p *ngIf="!annotation" style="font-size:20px; font-weight:bold"><em>{{Loading}}</em></p>
+<div *ngIf="annotation">
+
+<p class="lf-form-title-class">{{type.toLowerCase() == 'hotfix' ? "Hotfix" : "BVT"}} Validation Result: {{domain}}</p>
+
+<!-- <div class="row">
+    <div class="col-sm-2">
+        <span>Intent:</span>
+    </div>
+    <div class="col-sm-9">
+        <span>SlotString:</span>
+    </div>
+    <div class="col-sm-1">
+        <span>Equal</span>
+    </div>
+</div>
+
+<div *ngFor="let m of (annotation)">
+    <unit-com [annotation]="m"></unit-com>
+</div> -->
+
+
+
+<div class="row-layout" style="margin-top:50px; margin-bottom:50px" *ngIf="annotation">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="lf-form-third-class">
+                        <th style="width:10%">Source</th>
+                        <th style="width:15%">Intent</th>
+                        <th style="width:65%">SlotString</th>                        
+                        <th style="width:10%">Equal</th>                    
+                </tr>     
+            </thead>
+            <tbody class="lf-form-content-class" *ngFor="let m of (annotation)">
+                <tr style="margin-top:10px">
+                    <td>Local</td>
+                    <td>{{m.Intent}}</td>  
+                    <td>{{m.HotfixAnnotation}}</td>
+                    <td><span [ngClass]="m.AreAnnotationEqual ? 'label label-success' : 'label label-warning'">{{m.AreAnnotationEqual ? "Yes" : "No"}}</span></td>
+                </tr>
+                <tr>
+                    <td>QAS</td>
+                    <td>{{m.QASIntent}}</td>  
+                    <td>{{m.QASAnnotation}}</td>
+                    <td></td>
+                </tr>
+                <tr height="20"></tr>
+            </tbody>
+        </table>
+    </div>
+</div>

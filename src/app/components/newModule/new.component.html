@@ -1,0 +1,128 @@
+﻿<alert-comp #myAlert></alert-comp>
+<div class="page-main">
+    <div class="row">
+        <div class="well lf-instruction-font">
+            <ul>
+                <li>Click the "Create New" Button to create your new model. Note for domain the description needs be provided.</li>
+                <li>Please define the Intent and Slot after the Domain is created. Only Name and Tag are mandatory, others are optional</li>
+                <li>After clicking the "Submit" button, your model will be displayed in the dashboard. Next, please add the hotfix and bvt for your model.</li>
+            </ul>
+        </div>
+    </div>
+            <div class="row" style="margin-top:50px">
+                <div class="col-md-7">
+                    <p class="lf-title-font-class">Domain Created:</p>
+                    <div *ngIf="newSkill != null && newSkill != undefined">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span class="lf-form-content-class">{{newSkill.Name}}</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-default" (click)="editDomainClick('Domain')">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <input type="button" data-placement="bottom" value="Create New" class="btn btn-primary lf-small-button" title="create your domain" data-toggle="tooltip" [disabled]="newSkill != null && newSkill != undefined" (click)="createNewItem('Domain')" />
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-7">
+                    <p class="lf-title-font-class">Intents Defined:</p>
+                    <div *ngIf="newSkill != null && newSkill != undefined && newSkill.Intent != null && newSkill.Intent != undefined">
+                        <div *ngFor="let item of newSkill.Intent; let i = index" class="row">
+                            <div class="row" style="margin-top:2px" (mouseover)="item.DisplayFlag = false;" (mouseout)="item.DisplayFlag = true;">
+                                <div class="col-sm-6">
+                                    <span class="lf-form-intentslot-class">{{item.Tag}}</span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <button class="btn btn-default" (click)="editClick('Intent', i)">Edit</button>
+                                    <button class="btn btn-default" id ='delete_intent_{{i}}' style="margin-left:1px;" (click)="deleteClick('Intent', i)">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5" [hidden]="newSkill == null || newSkill == undefined">
+                    <input type="button" value="New Intent" class="btn btn-primary lf-small-button" (click)="createNewItem('Intent')" />
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-7">
+                    <p class="lf-title-font-class">Slots Defined:</p>
+                    <div *ngIf="newSkill != null && newSkill != undefined && newSkill.Slot != null && newSkill.Slot != undefined">
+                        <div *ngFor="let item of newSkill.Slot; let i=index">
+                            <div class="row" style="margin-top:2px" (mouseover)="item.DisplayFlag = false;" (mouseout)="item.DisplayFlag = true;">
+                                <div class="col-sm-6">
+                                    <span class="lf-form-content-class">{{item.Tag}}</span>
+                                </div>
+                                <div class="col-sm-6">
+                                    <button class="btn btn-default" (click)="editClick('Slot', i)">Edit</button>
+                                    <button class="btn btn-default" id ='delete_slot_{{i}}' style="margin-left:1px;" (click)="deleteClick('Slot', i)">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5" [hidden]="newSkill == null || newSkill == undefined">
+                    <input type="button" value="New Slot" class="btn btn-primary lf-small-button" (click)="createNewItem('Slot')" />
+                </div>
+            </div>
+            <hr />
+            <div class="row" style="margin-top:5px">
+                <div class="col-md-7"></div>
+                <div class="col-md-5">
+                    <button class="btn btn-primary lf-small-button" id="submitButton" [disabled]="newSkill == null || newSkill == undefined" (click)="submit()">Submit</button>
+                </div>
+            </div>
+
+        <div class="container lf-form-container" [hidden]="isntNewItemActive">
+            <div class="row">
+                <div class="col-md-6" style="text-align:left;">
+                    <p class="lf-title-font-class">{{action + ' ' + item}}</p>
+                </div>
+                <div class="col-md-6" style="text-align:right;">
+                    <span class="glyphicon glyphicon-remove size" title="Close" style="cursor:pointer;font-size:19px" (click)="closeWindow()"></span>
+                </div>
+            </div>
+            <hr />
+              <div class="row lf-form-container-inner" [hidden]="item == 'Domain'">
+                <div class="col-md-12">
+                    <form [formGroup]="formModel" autocomplete="off">
+                        <div style="font-size:17px">Name (Please input the {{item}} name, we will generate the tag for you below): <input type="text" #intentFocus=customAppFocus appFocus class="form-control" id="newIntentSlot" [(ngModel)]="inputName" (ngModelChange)="parseInputName($event)" style="width:55%; margin-bottom: 10px; margin-top:10px" formControlName="name" [placeholder] = "item == 'Intent' ? 'find_deal' : 'absolute_location' " /></div>
+                        <!-- <div style="font-size:17px">Name (Please input the {{item}} name, we will generate the tag for you below): <input type="text" class="form-control" id="newIntentSlot" [(ngModel)]="inputName" (ngModelChange)="parseInputName($event)" style="width:55%; margin-bottom: 10px; margin-top:10px" formControlName="name" [placeholder] = "item == 'Intent' ? 'find_deal' : 'absolute_location' " /></div> -->
+                        <div style="font-size:17px">{{Item}} Tag: {{inputTag}}</div>
+                        <div style="margin-top:30px; font-size:17px">Description: <input type="text" class="form-control" [(ngModel)]="intent_description" style="width:95%; margin-bottom: 10px" formControlName="description" [placeholder] = "item == 'Intent' ? 'user wants to find a deal...' : 'user needs the absolute location...' "></div>
+                        <div style="font-size:17px">Positive Examples (please define some example queries for this {{item}}) <span class="glyphicon myglyphicon glyphicon-plus-sign" title="Add a positive example" style="cursor:pointer; margin-bottom:10px; margin-left:10px" (click)="addPositive()" ></span></div>
+                        <div formArrayName="positive">
+                            <div *ngFor="let e of formModel.get('positive').controls; let i=index">
+                                <input [formControlName]="i" class="form-control" style="width:80%; margin-bottom:10px; display:inline" [placeholder] = "item == 'Intent' ? 'find me a deal...' : 'seattle, new york...' ">
+                                <span class="glyphicon glyphicon glyphicon-trash" style="cursor:pointer;font-size:19px; margin-left:1px" title="Remove a positive example" (click)="removePositive(i)"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+          </div>
+          <div class="row lf-intent-form-button" [hidden]="item == 'Domain'">
+              <button class="btn btn-primary lf-small-button" (click)="newItemSubmit()">Save</button>
+              <button class="btn btn-primary lf-small-button" (click)="closeWindow()">Cancel</button>
+              <button *ngIf="editIndex > 0 && action=='Edit'" class="btn btn-primary lf-small-button" (click)="previousClick()">&laquo; Previous</button>
+              <button *ngIf="action=='New' || (item == 'Intent' ? domain && domain.Intent && editIndex < domain.Intent.length - 1 : domain && domain.Slot && editIndex < domain.Slot.length - 1)" class="btn btn-primary lf-small-button" (click)="nextClick()">Add New &raquo;</button>
+          </div>
+          <div class="row lf-margin-left" [hidden]="item != 'Domain'">
+              <form [formGroup]="formDomain" class="form-horizontal" style="margin-top:10px" autocomplete="off" [hidden]="item!='Domain'">
+                  <div style="font-size:17px">Name* (only letter is allowed here): <input type="text" #domainFocus=customAppFocus appFocus class="form-control" [(ngModel)]="domain_name" (keyup)="parseDomainName($event)" style="width:55%; margin-bottom: 10px" formControlName="name" placeholder="shopping"/></div>
+                  <!-- <div style="font-size:17px">Name (only letter is allowed here): <input type="text" class="form-control" [(ngModel)]="domain_name" (keyup)="parseDomainName($event)" style="width:55%; margin-bottom: 10px" formControlName="name" placeholder="shopping"/></div> -->
+                  <div style="font-size:17px; margin-top:20px">Description*: <input type="text" class="form-control" id="domainDescription" [(ngModel)]="domain_description" style="width:95%; margin-bottom: 10px" formControlName="description" placeholder="This domain is about shopping..."></div>
+                  <span>*:Required</span>
+                  <div style="text-align:center; margin-top:50px">
+                      <button class="btn btn-primary lf-small-button" (click)="newDomainSubmit()">Save</button>
+                      <button class="btn btn-primary lf-small-button" (click)="closeWindow()">Cancel</button>
+                  </div>
+              </form>
+          </div>
+    </div>
+</div>

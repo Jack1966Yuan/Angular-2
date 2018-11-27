@@ -1,0 +1,138 @@
+﻿<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<alert-comp #myAlert></alert-comp>
+<!--<p *ngIf="!allModuleName"><em>Loading...</em></p>-->
+<div style="margin-top:10px; width:100%;">
+    <div class="row">
+        <div class="well lf-instruction-font">
+            <ul>
+                <li>Following are the list of models already being developed.</li>
+                <li>After submitting your model, our admin will review it and provide suggestions.</li>
+                <li>Next, we will deploy the model for you to QAS.</li>
+            </ul>
+        </div>
+    </div>
+    <p *ngIf="!allModuleName"><em>Loading...</em></p>
+
+    <div class="row" *ngIf="allModuleName" style="text-align:right;">
+        <button class="btn btn-primary lf-mid-button" [ngStyle]="{'color': importActive ? 'yellow' : 'white' }" id="import" (click)="importClick()">Import</button>
+        <button *ngIf="allModuleName.IsAdmin" class="btn btn-primary lf-width-button" [ngStyle]="{'color': exportActive ? 'yellow' : 'white' }" id="export" (click)="exportClick()">Export To UHRS</button>
+        <button class="btn btn-primary lf-mid-button" [ngStyle]="{'color': downloadActive ? 'yellow' : 'white' }" id="download" (click)="downloadClick()">Download</button>
+        <br />
+        <div *ngIf="downloadActive || exportActive" style="float:right;display:block;margin-top:5px;">
+            <!--select class="form-control" style="width:300px; text-align:right"
+                name="modelSelect"
+                id="idModelSelect"
+                [(ngModel)]="currentModelId"
+                (ngModelChange)="selectModel()">
+                <option value="" [selected]="true">Pick Your Model</option>
+                <option *ngFor="let md of allModuleName" [value]="md.DomainID">{{md.DomainName}}</option>
+            </select-->
+            <div style="width:400px; margin:2px;">
+                <div class="row" style="margin-bottom: 2px;" *ngIf="domainSelectedItems && domainSelectedItems.length > 0">
+                    <span *ngIf="!downloadActive" class="col-sm-4">File Name:</span>
+                    <div *ngIf="!downloadActive" class="col-sm-6"><input [(ngModel)]="exportFileName" class="form-control" /></div>
+                    <div class="col-sm-2" style="float:right" ><button class="btn btn-primary lf-sm-button" (click)="okClick()">OK</button></div>
+                </div>
+                <angular2-multiselect [data]="domainDropdownList" [(ngModel)]="domainSelectedItems"
+                [settings]="domainDropdownSettings"
+                (onSelect)="onMultiSelectChange($event)"
+                (onDeSelect)="onMultiSelectChange($event)"
+                (onSelectAll)="onMultiSelectChange($event)"
+                (onDeSelectAll)="onMultiSelectChange($event)">
+                </angular2-multiselect>
+            </div>
+        </div>
+        <div *ngIf='importActive' style="float:right; display:block; margin-top:2px; padding:2px; margin-left: 230px; border: 1px solid gray;">
+            <upload-comp [type]="'schema'" (fileuploaded)="uploadEvent($event)" (uploadCanceled)="cancelEvent()" ></upload-comp>
+        </div>
+    </div>
+
+    <span *ngIf="allModuleName" class="lf-instruction-font">Prebuilt Models:</span>
+    <div class="row row-layout"  *ngIf="allModuleName">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover fixed">
+                <thead>
+                    <tr style="font-size:large">
+                        <th style="cursor:pointer; width:30%; vertical-align: middle; text-align: center;" rowspan="2" (click)="sortProbuilt('Name')">Name</th>
+                        <th style="cursor:pointer; width:30%; vertical-align: middle; text-align: center;" rowspan="2" (click)="sortProbuilt('Int/Prod')">Int/Prod</th>
+                        <th style="cursor:pointer; width:30%; text-align: center;" colspan="3">Owner</th>
+                    </tr>
+                    <tr>
+                        <th style="width:10%; text-align: center;">Data</th>
+                        <th style="width:10%; text-align: center;">Model</th>
+                        <th style="width:10%; text-align: center;">Skill</th>
+                    </tr>
+                </thead>
+                <tbody style="font-family:Tahoma; font-size:larger">
+                    <tr *ngFor="let pre of prebuiltModelsObjList">
+                        <td *ngIf="pre.DomainID.length == 0"><span>{{ pre.DomainName }}</span></td>
+                        <td *ngIf="pre.DomainID.length > 0"><a [routerLink]="['/detail', pre.DomainID]">{{pre.DomainName}}</a></td>
+                        <td><span class="label label-success">{{ pre.InDevelopment? "Int": "Prod" }}</span></td>
+                        <td><span>{{ pre.Owners? pre.Owners.DataOwnerList.Alias.toString() : "" }}</span></td>
+                        <td><span>{{ pre.Owners? pre.Owners.ModelOwnerList.Alias.toString() : "" }}</span></td>
+                        <td><span>{{ pre.Owners? pre.Owners.SkillOwnerList.Alias.toString() : "" }}</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <span *ngIf="allModuleName" class="lf-instruction-font">Other LF Models:</span>
+    <div class="row row-layout"  *ngIf="allModuleName">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover fixed">
+                <thead>
+                    <tr style="font-size:large">
+                        <th style="cursor:pointer; width:30%; vertical-align: middle; text-align: center;" rowspan="2" (click)="sort('Name')">Name</th>
+                        <th style="cursor:pointer; width:30%; vertical-align: middle; text-align: center;" rowspan="2" (click)="sort('Int/Prod')">Int/Prod</th>
+                        <th style="width:30%; text-align: center;" colspan="3">Owner</th>
+                    </tr>
+                    <tr>
+                        <th style="width:10%; text-align: center;">Data</th>
+                        <th style="width:10%; text-align: center;">Model</th>
+                        <th style="width:10%; text-align: center;">Skill</th>
+                    </tr>
+                </thead>
+                <tbody style="font-family:Tahoma; font-size:larger">
+                    <tr *ngFor="let m of allModuleName.RequestedObject">
+                        <td *ngIf="!dicProbuilt[m.DomainName] && m.IsLFModel"><a [routerLink]="['/detail', m.DomainID]">{{m.DomainName}}</a></td>
+                        <td *ngIf="!dicProbuilt[m.DomainName] && m.IsLFModel"><span class="label label-success">{{ m.InDevelopment? "Int": "Prod" }}</span></td>
+                        <td *ngIf="!dicProbuilt[m.DomainName] && m.IsLFModel"><span>{{ m.Owners? m.Owners.DataOwnerList.Alias.toString(): "" }}</span></td>
+                        <td *ngIf="!dicProbuilt[m.DomainName] && m.IsLFModel"><span>{{ m.Owners? m.Owners.ModelOwnerList.Alias.toString(): "" }}</span></td>
+                        <td *ngIf="!dicProbuilt[m.DomainName] && m.IsLFModel"><span>{{ m.Owners? m.Owners.SkillOwnerList.Alias.toString(): "" }}</span></td>
+                    </tr>
+                </tbody>                
+            </table>
+        </div>
+      </div>
+      <span *ngIf="allModuleName" class="lf-instruction-font">Other Models:</span>
+      <div class="row row-layout-2"  *ngIf="allModuleName">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover fixed">
+                <thead>
+                    <tr style="font-size:large">
+                        <th style="cursor:pointer; width:30%; vertical-align: middle; text-align: center;" rowspan="2" (click)="sort('Name')">Name</th>
+                        <th style="cursor:pointer; width:30%; vertical-align: middle; text-align: center;" rowspan="2" (click)="sort('Int/Prod')">Int/Prod</th>
+                        <th style="cursor:pointer; width:30%; text-align: center;" colspan="3">Owner</th>
+                    </tr>
+                    <tr>
+                        <th style="width:10%; text-align: center;">Data</th>
+                        <th style="width:10%; text-align: center;">Model</th>
+                        <th style="width:10%; text-align: center;">Skill</th>
+                    </tr>
+                </thead>
+                <tbody style="font-family:Tahoma; font-size:larger">
+                    <tr *ngFor="let m of allModuleName.RequestedObject">
+                        <td *ngIf="!m.IsLFModel"><a [routerLink]="['/detail', m.DomainID]">{{m.DomainName}}</a></td>
+                        <td *ngIf="!m.IsLFModel"><span class="label label-success">{{ m.InDevelopment? "Int": "Prod" }}</span></td>
+                        <td *ngIf="!m.IsLFModel"><span>{{ m.Owners? m.Owners.DataOwnerList.Alias.toString(): "" }}</span></td>
+                        <td *ngIf="!m.IsLFModel"><span>{{ m.Owners? m.Owners.ModelOwnerList.Alias.toString(): "" }}</span></td>
+                        <td *ngIf="!m.IsLFModel"><span>{{ m.Owners? m.Owners.SkillOwnerList.Alias.toString(): "" }}</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+</div>

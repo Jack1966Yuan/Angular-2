@@ -1,0 +1,13 @@
+<nav-menu></nav-menu>
+<div class='container-fluid' style="margin-top:70px">
+    <div class='row'>
+        <div class='col-md-2 left-panel'>
+            <tree-root [nodes]="nodes" [options]="options" (toggleExpanded)="onBlur($event)" (activate)="onEvent($event)"></tree-root>
+        </div>
+        <div class='col-md-9 body-content'>
+            <router-outlet></router-outlet>
+        </div>
+        <div class='col-md-1'>
+        </div>
+    </div>
+</div>

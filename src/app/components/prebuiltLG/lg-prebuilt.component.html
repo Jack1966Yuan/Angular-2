@@ -1,0 +1,111 @@
+<alert-comp #myAlert></alert-comp>
+
+<div class="row">
+    <div class="col-md-7">
+      <div class="row gap">
+        <div class="col-sm-2 right top">
+          <span>LG Domain:</span>
+        </div>
+        <div class="col-sm-10">
+            <select *ngIf="lgModels && lgModels.length > 0" (change)="onLGSelectChange($event.target.value)" [(ngModel)]="selectedLGModel" class="form-control half gap">
+                <option *ngFor="let name of lgModels;" [ngValue]="name">{{name}}</option>
+                <option value="" [selected]="true">Select LG Domain</option>
+            </select>    
+        </div>
+      </div>
+
+      <div class="row gap">
+          <div class="col-sm-2 right top">
+            <span>LU Domain:</span>
+          </div>
+          <div class="col-sm-10">
+              <select *ngIf="luModels && luModels.length > 0" (change)="onLUSelectChange($event.target.value)" [(ngModel)]="selectedLUModel" class="form-control half gap">
+                  <option *ngFor="let name of luModels;" [ngValue]="name">{{name}}</option>
+                  <option value="" [selected]="true">Select LU Domain</option>
+              </select>    
+          </div>
+      </div>
+  
+      <div class="row gap" *ngIf="luModels && luModels.length > 0 && lgModels && lgModels.length > 0">
+          <div class="col-sm-2 right top">
+              <span>Query:</span>
+          </div>
+          <div class="col-sm-10">
+            <div class="row">
+              <div class="col-sm-9">
+                  <input type="text" [(ngModel)]="query" class="form-control" (keyup.enter)="onInputQueryClick()" placeholder="Input Query" />
+              </div>
+              <div class="col-sm-3">
+                  <input type="button" class="btn btn-primary lf-small-button" (click)="onInputQueryClick()" value="Enter" />
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div *ngIf="luResult && luResult.length > 0" class="row">
+            <div class="col-sm-2 right top">
+                <span>Lu Intent:</span>
+            </div>
+            <div class="col-sm-10 top">
+                <span>{{luResult[0].Intent}}</span>
+            </div>
+      </div>
+      <div *ngIf="luResult && luResult.length > 0" class="row bggap">
+            <div class="col-sm-2 right top">
+                <span>Slot String:</span>
+            </div>
+            <div class="col-sm-10 top">
+                <span>{{luResult[0].SlotStringXml}}</span>
+            </div>
+      </div>
+
+      <div class="row bggap" *ngIf="lgIntentList && lgIntentList.length > 0">
+            <div class="col-sm-2 right top">
+              <span>LG Intent:</span>
+            </div>
+            <div class="col-sm-10">
+                <select (change)="onLGIntentSelectChange($event.target.value)" [(ngModel)]="selectedLGIntent" class="form-control half">
+                    <option *ngFor="let name of lgIntentList;" [ngValue]="name">{{name}}</option>
+                    <option value="" [selected]="true">Select LG Intent</option>
+                </select>    
+            </div>
+      </div>
+
+      <div class="row gap" *ngIf="conditionSlotsList && conditionSlotsList.length > 0">
+            <div class="col-sm-2 right top">
+              <span>Conditional Slot:</span>
+            </div>
+            <div class="col-sm-10">
+                <table class="table table-bordered table-striped">
+                    <tbody *ngFor="let item of conditionSlotsList;">
+                        <tr>
+                            <td style="width:40%">{{item.Name}}</td>
+                            <td style="width:60%">
+                                <select (change)="onSlotConditionChange($event.target.value)" [(ngModel)]="item.SelectedValue" class="form-control full">
+                                    <option *ngFor="let value of item.PossibleValues;" [selected]="item.SelectedValue && item.SelectedValue == value" [ngValue]="value">{{value}}</option>
+                                    <option value="" [selected]="item.SelectedValue == ''">Select Slot Condition</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>                        
+                </table>
+            </div>
+      </div>
+
+    </div>
+    <div class="col-md-5" *ngIf="selectedLGIntent.length > 0">
+        <div class="gap">
+          <span class="lf-title-font">Entity:</span>
+          <textarea class="form-control" rows="15" [(ngModel)]="entity" [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+        <div *ngIf='result && result.length > 0'>
+           <span class="lf-title-font">Result:</span>
+           <br />
+           <span style="background-color: yellow">{{result}}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="text-align: center; padding-top: 50px;" *ngIf="entity && entity.length > 2">
+        <input class="btn btn-primary lf-mid-button" type="button" value="Submit" (click)="onSubmitClick();" />
+</div>

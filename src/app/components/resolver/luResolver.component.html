@@ -1,0 +1,105 @@
+<alert-comp #myAlert></alert-comp>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="row" style="margin-bottom: 2px">
+            <div class="col-sm-4" style="text-align:right">
+                <span class="domainintentslot">Type: </span>
+            </div>
+            <div class="col-sm-7">
+                <select (change)="onChange($event.target.value)" class="form-control">
+                    <option *ngFor="let item of typeSelectItems" [selected]="item.id == 1" class="form-control">{{item.name}}</option>
+                </select>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row" style="margin-bottom: 2px" *ngIf="selectedType.indexOf('Luis') >= 0">
+            <div class="col-sm-4" style="text-align: right">
+                <span class="domainintentslot">Luis AppId:</span>
+            </div>
+            <div class="col-sm-7">
+                <input type="text" [(ngModel)]="appId" class="form-control" placeholder="Enter App Id" />
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row" style="margin-bottom: 2px" *ngIf="selectedType.indexOf('Luis') >= 0">
+            <div class="col-sm-4" style="text-align: right">
+                <span class="domainintentslot">Subscription Key: </span>
+            </div>
+            <div class="col-sm-7">
+                <input type="text" [(ngModel)]="key" class="form-control" placeholder="Enter App key" />
+            </div>
+            <div class="col-sm-1"></div>                
+        </div>
+        <div class="row" style="margin-bottom: 2px" *ngIf="selectedType.indexOf('Prebuilt') >= 0">
+            <div class="col-sm-4" style="text-align: right">
+                <span class="domainintentslot">Prebuilt Domain:</span>
+            </div>
+            <div class="col-sm-7">
+                <angular2-multiselect [data]="prebuiltDropdownList" [(ngModel)]="prebuiltSelectedItems" 
+                [settings]="domainDropdownSettings" 
+                (onSelect)="onMultiSelectChange($event)" 
+                (onDeSelect)="onMultiSelectChange($event)"
+                (onSelectAll)="onMultiSelectChange($event)"
+                (onDeSelectAll)="onMultiSelectChange($event)"></angular2-multiselect> 
+            </div>
+            <div class="col-sm-1"></div>                
+        </div>
+        <div class="row" style="margin-bottom: 2px" *ngIf="selectedType.indexOf('Skill') >= 0">
+            <div class="col-sm-4" style="text-align: right">
+                <span class="domainintentslot">Skill Domain:</span>
+            </div>
+            <div class="col-sm-7">
+                <angular2-multiselect [data]="skillDropdownList" [(ngModel)]="skillSelectedItems" 
+                [settings]="domainDropdownSettings" 
+                (onSelect)="onMultiSelectChange($event)" 
+                (onDeSelect)="onMultiSelectChange($event)"
+                (onSelectAll)="onMultiSelectChange($event)"
+                (onDeSelectAll)="onMultiSelectChange($event)"></angular2-multiselect> 
+            </div>
+            <div class="col-sm-1"></div>                
+        </div>
+        <div class="row">
+                <div class="col-sm-4" style="text-align: right">
+                    <span class="domainintentslot">Queries:</span>
+                </div>
+                <div class="col-sm-8">
+                    <ol>
+                        <li *ngFor="let q of queries">{{q}}</li>
+                    </ol>
+                    <div class="row" style="margin-top: 5px; margin-bottom: 5px">
+                        <div class="col-sm-7">
+                            <input type="text" [(ngModel)]="query" class="form-control" (keyup.enter)="addquery()" placeholder="Input query here" />
+                        </div>
+                        <div class="col-sm-5">
+                            <input type="button" class="btn btn-primary lf-small-button" (click)="addquery()" value="Add Query" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+    <div class="col-md-6">
+        <div *ngIf="testResults && testResults.length > 0">
+            <span class="domainintentslot">Result:</span>
+            <div class="row">
+                <table class="table table-bordered table-striped">
+                    <thead>    
+                        <tr>
+                            <th style="width:20%; text-align: center;">Domain</th>
+                            <th style="width:20%; text-align: center;">Intent</th>
+                            <th style="width:60%; text-align: center;">Slot String</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of testResults">
+                            <td style="width:20%">{{item.DomainName}}</td>
+                            <td style="width:20%">{{item.Intent}}</td>
+                            <td style="width:60%">{{item.SlotStringXml}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+<alert-comp #myAlert></alert-comp>
+<div class="well lf-instruction-font">
+    <ul>
+      <li>Please use this page to review the UHRS annotated data per task.</li>
+      <li>You can change the domain per selection to edit the annotation. And can sort by query or domain alphabetically by clicking the form title</li>
+      <li>Currently we only support approve all or reject all operation, we will add single review as well.</li>
+      <li>Click this <a href="https://prod.uhrs.playmsn.com/Manage/Task/TaskList?hitappid=34770">UHRS Link</a> to access UHRS HitApp directly </li>
+  </ul>
+</div>
+
+<div style="margin-top:50px">
+   <p class="lf-title-font">TaskID: {{taskID}}</p>
+   <p class="lf-title-font">TaskName: {{taskName}}</p>
+</div>
+
+<div style="margin-top:35px">
+    <button class="btn btn-primary lf-mid-button" id = "approve_button" (click)="completeReview(2)">Approve all</button>
+    <button class="btn btn-primary lf-mid-button" id = "reject_button" (click)="completeReview(1)">Reject all</button>
+</div>
+
+<div *ngIf="isStatsReady" style="margin-top:60px" class="row">
+   <div class="col-md-5 table-responsive">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="lf-table-header-class">
+                        <th style="width:30%">Domain</th>
+                        <th style="width:30%">SelectCounts</th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let item of selectDomain">
+                <tr class="lf-table-content-class" style="margin-top:1px">
+                    <td>{{item}}</td>
+                    <td>{{getDomainCountFromMap(item)}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="lf-annotation-form-position" *ngIf="!isChannelBusy">
+    <div class="row" style="margin-bottom:30px">
+        <div class="col-sm-7 lf-title-font">
+            <span style="cursor:pointer" (click)="sortAnnotationListByQuery()">Query:</span>
+        </div>
+        <div class="col-sm-3 lf-title-font">
+             <span style="cursor:pointer" (click)="sortAnnotationListByDomain()">Domain:</span>
+        </div>
+    </div>
+
+    <div class="row" *ngFor="let item of uhrsAnnotationContent.AnnotationList">
+        <hr style="height:10px">
+        <div class="col-sm-7 lf-table-content-class">
+            <span>{{item.Query}}</span>
+        </div>
+      <div class="col-sm-3">
+          <angular2-multiselect [data]="domainCandidateList" [(ngModel)]="item.MultiSelectArray"
+          [settings]="domainDropdownSettings"
+          (onSelect)="onDomainSelected($event, item)"
+           (onDeSelect)="onDomainDeselected($event, item)"></angular2-multiselect>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="isChannelBusy" class="lf-popup-spin">
+    <table style="width: 100%; height: 100%">
+        <tr style="vertical-align: central">
+            <td style="text-align: center; font-weight: bold;">
+                <spinner [tickness]="5" [size]="150"></spinner>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,47 @@
+.lf-instruction-font {
+  font-family: 'Tahoma';
+  font-size: 19px;
+}
+
+.lf-title-font {
+  color: #7c795d;
+  font-family: 'Tahoma';
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.lf-table-content-class {
+  font-family: 'Tahoma';
+  font-size: 20px;
+}
+
+.lf-selection-content-class {
+  font-family: 'Tahoma';
+  font-size: 17px;
+}
+
+.lf-table-header-class {
+  font-family: 'Tahoma';
+  font-size: 20px;
+}
+
+.lf-mid-button {
+  width: 120px;
+}
+
+.lf-annotation-form-position {
+  margin-top: 80px;
+  margin-bottom: 300px
+}
+
+.lf-popup-spin {
+  position: fixed;
+  left: 0px;
+  top:0px;
+  z-index: 10;
+  opacity: 0.5;
+  height: 1000px;
+  min-height:100%;
+  min-width:100%;
+}
+

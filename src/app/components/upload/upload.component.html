@@ -1,0 +1,14 @@
+<div>
+    <input type="file" class="form-control" style="width:500px; margin-bottom:5px" (change)="fileChangeEvent($event)" placeholder="Upload file..." />
+    <button type="button" id="uploadButton" [disabled]="(channelBusy)" class="btn btn-primary" style="width:100px" (click)="upload()">Upload</button>
+    <button *ngIf="type != 'domainrouting'" type="button" class="btn btn-primary" style="width:100px;" (click)="cancelUpload()">Cancel</button>
+</div>
+<div *ngIf= "channelBusy" class="pop">
+    <table style="width: 100%; height: 100%">
+        <tr style="vertical-align: central">
+            <td style="text-align: center; font-weight: bold;">
+                <spinner [tickness]="5" [size]="150"></spinner> 
+            </td>
+        </tr>
+    </table>
+</div>

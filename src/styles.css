@@ -1,5 +1,7 @@
-h1 {
-  color: #369;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 250%;
+/* You can add global styles to this file, and also import other style files */
+@import '~angular-tree-component/dist/angular-tree-component.css';
+
+.selected-list .c-btn {
+  font-family: 'tahoma' !important;
+  font-size: 17px !important;
 }

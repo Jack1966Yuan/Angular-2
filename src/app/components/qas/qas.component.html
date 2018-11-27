@@ -1,0 +1,41 @@
+<div>
+    <div class='row'>
+        <div class='col-md-5'>
+            <span class="lf-form-title-class">Environment:</span>
+            <select (change)="onChange($event.target.value)" class="form-control">
+                    <option *ngFor="let whr of environment" [selected]="location == whr" class="form-control">{{whr}}</option>
+            </select>
+            <br />
+            <span class="lf-form-title-class">ClientId:</span>
+            <select (change)="onClentIdChange($event.target.value)" class="form-control">
+                <option *ngFor="let whr of clientId" [selected]="'default' == whr" class="form-control">{{whr}}</option>
+            </select>
+            <br />
+            <span class="lf-form-title-class">Query:</span>
+            <input type="text" class="form-control" style="font-size:12px;" (keyup)="onKey($event)" />
+            <br />
+            <span class="lf-form-title-class">Domain:</span>
+            <angular2-multiselect [data]="domainDropdownList" [(ngModel)]="domainSelectedItems" 
+            [settings]="domainDropdownSettings" 
+            (onSelect)="onMultiSelectChange($event)" 
+            (onDeSelect)="onMultiSelectChange($event)"
+            (onSelectAll)="onMultiSelectChange($event)"
+            (onDeSelectAll)="onMultiSelectChange($event)"></angular2-multiselect>        
+        </div>
+        <div class='col-md-7'>
+            <div style="width:100%" *ngFor="let item of result">
+                <h3>{{item.domainName}}</h3>
+                <div style="width:100%">
+                    <table class="table table-bordered table-striped">
+                        <tbody *ngFor="let va of item.valueList">
+                            <tr>
+                                <td style="width:20%">{{va.key}}</td>
+                                <td style="width:80%">{{va.value}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>

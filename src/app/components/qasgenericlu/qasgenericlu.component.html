@@ -1,0 +1,34 @@
+<div>
+  <div class='row'>
+      <div class='col-md-5'>
+          <span class="lf-form-title-class">Environment:</span>
+          <select (change)="onEnvironmentChange($event.target.value)" class="form-control">
+                  <option *ngFor="let environment of environments" [selected]="environment == targetedEnvironment" class="form-control">{{environment}}</option>
+          </select>
+          <br />
+          <span class="lf-form-title-class">Model:</span>
+          <select (change)="onModelChange($event.target.value)" class="form-control">
+                  <option *ngFor="let model of models" [selected]="model == targetedModel" class="form-control">{{model}}</option>
+          </select>
+          <br />
+          <span class="lf-form-title-class">Query:</span>
+          <input type="text" class="form-control" style="font-size:12px;" (keyup)="onKeyUp($event)" />
+          <br />
+      </div>
+      <div class='col-md-7'>
+          <div style="width:100%" *ngFor="let item of results">
+              <h3>{{item.domainName}}</h3>
+              <div style="width:100%">
+                  <table class="table table-bordered table-striped">
+                      <tbody *ngFor="let va of item.valueList">
+                          <tr>
+                              <td style="width:20%">{{va.key}}</td>
+                              <td style="width:80%">{{va.value}}</td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

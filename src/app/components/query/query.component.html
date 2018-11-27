@@ -1,0 +1,66 @@
+﻿<!--div class="container" style="border:1px solid black; position: fixed; top:20%; left:20%; margin:5px; background-color:white; padding:10px; min-width:800px; min-height:400px; z-index:20; width: auto; height: auto; " [hidden]="isNewUtteranceActive"-->
+<div>
+    <div class="row">
+        <div class="col-sm-10">
+            <p class="lf-form-title-class">{{type}}</p>
+        </div>
+        <div class="col-sm-2">
+            <span class="glyphicon glyphicon-remove" style="cursor:pointer; width: 100%; text-align: right" (click)="cancelClick()"></span>
+        </div>
+    </div>
+    <div>
+        <p class="lf-form-title-class">Intent:</p>
+        <select [disabled]="readOnly" [(ngModel)]="intent" class="form-control">
+            <option *ngFor="let itn of utterRule.IntentList; let i = index" [ngValue]="itn.Tag">{{itn.Tag}}</option>
+            <option value="" [selected]="currentEditindex==-1">(Pick One)</option>
+        </select>
+    </div>
+    <div style="margin-top:12px">
+        <p class="lf-form-title-class">Input Text:</p>
+        <input [disabled]="inputDisable || readOnly" [(ngModel)]="text" type="text" class="form-control" (keyup)="textChange()" style="width:100%" />
+        <br />
+    </div>
+    <hr />
+    <div class="row" style="margin:5px;">
+        <ul>
+            <li class="lf_hotfixform_instruction_class">To tag Entity, using mouse to select the words from below sentence, then slightly move mouse to view the avavilable Slots from Pop-up window.</li>
+            <li class="lf_hotfixform_instruction_class">There is no need to select all letters from a word in order to tag it, only part of letters will do the trick</li>
+            <li class="lf_hotfixform_instruction_class">To remove the tag, select 'UnTag' option</li>
+        </ul>
+    </div>
+    <div class="row lf-hotfix-content-class">
+        <div>
+            <div *ngFor="let word of words; let i=index" style="display:inline-block" (mousedown)="mouseDown()" (mouseup)="mouseUp()">
+                <span (mousemove)="!readOnly && mouseMoving(i, word, $event)" [ngStyle]="{color: wordsSloted[i] ? 'red' : 'black', cursor: pointer }">{{word}}</span>
+                <span (mousemove)="!readOnly && mouseMoving(i, '', $event)" style="cursor:pointer">&nbsp;</span>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div [ngStyle]="{display: display, left: left, top: top}" class="popDiv" id="style-3" >
+        <div class="row">
+            <div class="col-md-8">
+                <p class="lf-instruction-font">Available Slot:</p>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-md-2">
+                <span class="glyphicon glyphicon-remove" style="cursor:pointer; text-align: right" (click)="display = 'none'"></span>
+            </div>
+        </div>
+        <hr />
+        <div *ngFor="let s of utterRule.SlotList; let i = index" style="padding-left:5px;">
+            <span class="select lf-hotfix-tag-font-class" (click)="slotSelect(s.Tag)">{{ s.Tag }}</span>
+        </div>
+    </div>
+    <hr style="margin-top:30px" />
+    <div class="row lf-form-title-class" *ngIf="setences && setences.slotString">
+        <div class="col-md-10">
+            <span>{{setences.slotString}}</span>
+        </div>
+    </div>
+    <hr style="margin-top:50px" />
+    <div style="text-align:center">
+        <input *ngIf="!readOnly" type="button" style="width:120px" value="Save" class="btn btn-primary" (click)="saveUtterance()" />
+        <input type="button" style="width:120px; margin-left:1px" value="Cancel" class="btn btn-primary" (click)="cancelClick()" />
+    </div>
+</div>
